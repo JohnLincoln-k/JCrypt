@@ -536,8 +536,6 @@ If this repository uses a different license, replace this section with the appro
 Cybersecurity Enthusiast | Ethical Hacking | Cryptography | Web Security | AI Security
 
 ---
-# NOTE 
-** This Demo link only use for the UI for this tool only the encryption not work on this demo website:- https://j-crypt.vercel.app/**
 
 ## 🔐 JCRYPT
 
