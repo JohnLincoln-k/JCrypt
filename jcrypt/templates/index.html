@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero__inner">
+    <p class="hero__eyebrow">Local · Stateless · Open cryptography</p>
+    <h1 class="hero__title">Encrypt, hash, and encode text<br>without leaving your machine.</h1>
+    <p class="hero__sub">
+      JCRYPT runs modern AEAD ciphers, twelve hash functions, four classical ciphers,
+      and four text encodings — all processed on your Flask server, nothing stored,
+      nothing sent anywhere else.
+    </p>
+  </div>
+
+  <div class="stat-strip" id="statStrip">
+    <div class="stat-card">
+      <span class="stat-card__value">{{ stats.total_algorithms }}+</span>
+      <span class="stat-card__label">Supported Algorithms</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">{{ stats.encryption_algorithms }}</span>
+      <span class="stat-card__label">Encryption Algorithms</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">{{ stats.hash_algorithms }}</span>
+      <span class="stat-card__label">Hash Algorithms</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">{{ stats.encoding_methods }}</span>
+      <span class="stat-card__label">Encoding Methods</span>
+    </div>
+  </div>
+</section>
+
+<section class="tabs-nav" aria-label="Toolkit sections">
+  <button class="tab-btn is-active" data-tab="workspace">Encrypt / Decrypt</button>
+  <button class="tab-btn" data-tab="hash-section">Hash</button>
+  <button class="tab-btn" data-tab="encode-section">Encode / Decode</button>
+</section>
+
+<!-- ======================= ENCRYPT / DECRYPT ======================= -->
+<section class="panel-section is-active" id="workspace" data-panel="workspace">
+  <div class="workspace-grid">
+
+    <div class="panel panel--config">
+      <h2 class="panel__title">Configuration</h2>
+
+      <label class="field">
+        <span class="field__label">Algorithm</span>
+        <select id="cryptoAlgorithm" class="field__control">
+          <optgroup label="Symmetric Encryption">
+            {% for algo in symmetric %}
+            <option value="{{ algo.id }}" data-category="symmetric">{{ algo.name }}</option>
+            {% endfor %}
+          </optgroup>
+          <optgroup label="Classical Ciphers">
+            {% for algo in classical %}
+            <option value="{{ algo.id }}" data-category="classical">{{ algo.name }}</option>
+            {% endfor %}
+          </optgroup>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Operation</span>
+        <div class="segmented" id="cryptoOperation">
+          <button type="button" class="segmented__btn is-active" data-value="encrypt">Encrypt</button>
+          <button type="button" class="segmented__btn" data-value="decrypt">Decrypt</button>
+        </div>
+      </label>
+
+      <div id="cryptoParams" class="dynamic-params">
+        <!-- Populated by app.js based on selected algorithm -->
+      </div>
+
+      <div class="algo-info" id="cryptoAlgoInfo">
+        <!-- Populated by app.js -->
+      </div>
+    </div>
+
+    <div class="panel panel--io">
+      <div class="io-block">
+        <div class="io-block__header">
+          <h2 class="panel__title">Input Text</h2>
+          <span class="char-counter" id="cryptoInputCount">0 characters</span>
+        </div>
+        <textarea id="cryptoInput" class="text-area" placeholder="Type or paste text to encrypt or decrypt…" spellcheck="false"></textarea>
+        <div class="io-block__actions">
+          <button class="btn btn--primary" id="cryptoRunBtn">Run</button>
+          <button class="btn btn--ghost" id="cryptoClearBtn">Clear</button>
+        </div>
+      </div>
+
+      <div class="io-block">
+        <div class="io-block__header">
+          <h2 class="panel__title">Result</h2>
+          <span class="char-counter" id="cryptoOutputCount">0 characters</span>
+        </div>
+        <textarea id="cryptoOutput" class="text-area text-area--output" placeholder="Result will appear here…" readonly spellcheck="false"></textarea>
+        <div class="io-block__actions">
+          <button class="btn btn--secondary" id="cryptoCopyBtn">Copy</button>
+          <button class="btn btn--secondary" id="cryptoDownloadBtn">Download .txt</button>
+        </div>
+        <div class="field" id="cryptoNonceOutputWrap" style="display:none; margin-top: 10px;">
+          <span class="field__label">Nonce (required to decrypt — save this)</span>
+          <div class="field-with-action">
+            <input type="text" id="cryptoNonceOutput" class="field__control field__control--mono" readonly>
+            <button class="btn btn--secondary btn--small" id="cryptoNonceCopyBtn" type="button">Copy</button>
+          </div>
+        </div>
+        <p class="status-line" id="cryptoStatus" role="status"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="live-stats">
+    <div class="live-stats__item"><span>Current Operation</span><strong id="statOperation">Encrypt</strong></div>
+    <div class="live-stats__item"><span>Selected Algorithm</span><strong id="statAlgorithm">—</strong></div>
+    <div class="live-stats__item"><span>Input Characters</span><strong id="statInputChars">0</strong></div>
+    <div class="live-stats__item"><span>Output Characters</span><strong id="statOutputChars">0</strong></div>
+  </div>
+</section>
+
+<!-- ======================= HASH ======================= -->
+<section class="panel-section" id="hash-section" data-panel="hash-section">
+  <div class="workspace-grid">
+
+    <div class="panel panel--config">
+      <h2 class="panel__title">Configuration</h2>
+
+      <label class="field">
+        <span class="field__label">Algorithm</span>
+        <select id="hashAlgorithm" class="field__control">
+          {% for algo in hashes %}
+          <option value="{{ algo.id }}">{{ algo.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <p class="hint-box">
+        Hashing is one-way. A digest cannot be reversed back into the original
+        text — this tool only computes digests, it never "decrypts" a hash.
+      </p>
+
+      <div class="algo-info" id="hashAlgoInfo">
+        <!-- Populated by app.js -->
+      </div>
+    </div>
+
+    <div class="panel panel--io">
+      <div class="io-block">
+        <div class="io-block__header">
+          <h2 class="panel__title">Input Text</h2>
+          <span class="char-counter" id="hashInputCount">0 characters</span>
+        </div>
+        <textarea id="hashInput" class="text-area" placeholder="Type or paste text to hash…" spellcheck="false"></textarea>
+        <div class="io-block__actions">
+          <button class="btn btn--primary" id="hashRunBtn">Generate Hash</button>
+          <button class="btn btn--ghost" id="hashClearBtn">Clear</button>
+        </div>
+      </div>
+
+      <div class="io-block">
+        <div class="io-block__header">
+          <h2 class="panel__title">Digest</h2>
+          <span class="char-counter" id="hashOutputCount">0 characters</span>
+        </div>
+        <textarea id="hashOutput" class="text-area text-area--output" placeholder="Digest will appear here…" readonly spellcheck="false"></textarea>
+        <div class="io-block__actions">
+          <button class="btn btn--secondary" id="hashCopyBtn">Copy</button>
+          <button class="btn btn--secondary" id="hashDownloadBtn">Download .txt</button>
+        </div>
+        <p class="status-line" id="hashStatus" role="status"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ENCODE / DECODE ======================= -->
+<section class="panel-section" id="encode-section" data-panel="encode-section">
+  <div class="workspace-grid">
+
+    <div class="panel panel--config">
+      <h2 class="panel__title">Configuration</h2>
+
+      <label class="field">
+        <span class="field__label">Method</span>
+        <select id="encodeMethod" class="field__control">
+          {% for algo in encodings %}
+          <option value="{{ algo.id }}">{{ algo.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Operation</span>
+        <div class="segmented" id="encodeOperation">
+          <button type="button" class="segmented__btn is-active" data-value="encode">Encode</button>
+          <button type="button" class="segmented__btn" data-value="decode">Decode</button>
+        </div>
+      </label>
+
+      <div class="algo-info" id="encodeAlgoInfo">
+        <!-- Populated by app.js -->
+      </div>
+    </div>
+
+    <div class="panel panel--io">
+      <div class="io-block">
+        <div class="io-block__header">
+          <h2 class="panel__title">Input Text</h2>
+          <span class="char-counter" id="encodeInputCount">0 characters</span>
+        </div>
+        <textarea id="encodeInput" class="text-area" placeholder="Type or paste text to encode or decode…" spellcheck="false"></textarea>
+        <div class="io-block__actions">
+          <button class="btn btn--primary" id="encodeRunBtn">Run</button>
+          <button class="btn btn--ghost" id="encodeClearBtn">Clear</button>
+        </div>
+      </div>
+
+      <div class="io-block">
+        <div class="io-block__header">
+          <h2 class="panel__title">Result</h2>
+          <span class="char-counter" id="encodeOutputCount">0 characters</span>
+        </div>
+        <textarea id="encodeOutput" class="text-area text-area--output" placeholder="Result will appear here…" readonly spellcheck="false"></textarea>
+        <div class="io-block__actions">
+          <button class="btn btn--secondary" id="encodeCopyBtn">Copy</button>
+          <button class="btn btn--secondary" id="encodeDownloadBtn">Download .txt</button>
+        </div>
+        <p class="status-line" id="encodeStatus" role="status"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script id="algorithmData" type="application/json">{{ (symmetric + classical + hashes + encodings) | tojson }}</script>
+{% endblock %}

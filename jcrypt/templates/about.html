@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}About — JCRYPT{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  {% if not_found %}
+  <p class="hero__eyebrow">404</p>
+  <h1 class="page-header__title">Page not found</h1>
+  <p class="page-header__sub">That route doesn't exist. Here's what JCRYPT is, while you're here.</p>
+  {% else %}
+  <p class="hero__eyebrow">About</p>
+  <h1 class="page-header__title">JCRYPT</h1>
+  <p class="page-header__sub">A practical encryption, decryption &amp; hashing toolkit.</p>
+  {% endif %}
+</section>
+
+<section class="about-content">
+  <p>
+    JCRYPT is an educational cybersecurity project for exploring how modern and
+    classical cryptography, hashing, and text encoding actually work. It bundles
+    authenticated encryption (AES-GCM, ChaCha20-Poly1305, Fernet), five classical
+    ciphers, twelve hash algorithms, and four text encodings behind one small,
+    local web interface.
+  </p>
+
+  <h2>How it works</h2>
+  <p>
+    The interface is plain HTML, CSS, and vanilla JavaScript talking to a Flask
+    backend over a small JSON API. Every operation — encrypting, decrypting,
+    hashing, encoding — runs entirely inside your local Flask process using
+    well-vetted Python libraries: the <code>cryptography</code> package for AES,
+    ChaCha20-Poly1305, and Fernet, and the standard library's <code>hashlib</code>
+    for digests. No cryptographic primitive is implemented by hand.
+  </p>
+
+  <h2>What JCRYPT is not</h2>
+  <ul class="about-list">
+    <li>Not a place to store secrets — nothing is written to disk or a database.</li>
+    <li>Not a password manager, VPN, or production security product.</li>
+    <li>Not a place to trust classical ciphers (Caesar, ROT13, Atbash, Vigenere,
+      Affine) for real confidentiality — they exist purely to teach the ideas
+      behind substitution ciphers.</li>
+  </ul>
+
+  <h2>Design principles</h2>
+  <ul class="about-list">
+    <li>Stateless by default — refreshing the page clears everything.</li>
+    <li>Keys are generated with Python's <code>secrets</code> module, never
+      <code>random</code>.</li>
+    <li>Modern authenticated modes only — no unauthenticated or ECB-mode AES.</li>
+    <li>Clear, non-alarming error messages for bad input, wrong keys, or
+      malformed ciphertext.</li>
+  </ul>
+</section>
+
+{% endblock %}

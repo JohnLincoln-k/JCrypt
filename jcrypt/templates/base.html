@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}JCRYPT — Cryptography &amp; Hashing Toolkit{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="scanline-overlay" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="brand__mark">J</span>
+      <span class="brand__text">
+        <span class="brand__name">JCRYPT</span>
+        <span class="brand__tag">Cryptography &amp; Hashing Toolkit</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a href="{{ url_for('index') }}#workspace" class="site-nav__link">Encrypt / Decrypt</a>
+      <a href="{{ url_for('index') }}#hash-section" class="site-nav__link">Hash</a>
+      <a href="{{ url_for('index') }}#encode-section" class="site-nav__link">Encode / Decode</a>
+      <a href="{{ url_for('algorithms_page') }}" class="site-nav__link">Algorithms</a>
+      <a href="{{ url_for('about_page') }}" class="site-nav__link">About</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
+        <span class="theme-toggle__icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle__label">Black</span>
+      </button>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="site-main">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p>JCRYPT runs entirely on your local machine. No accounts, no database, nothing sent to external servers.</p>
+    <p class="site-footer__meta">Built with Flask · Python <code>cryptography</code> · <code>hashlib</code></p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

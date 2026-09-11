@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Algorithms — JCRYPT{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <p class="hero__eyebrow">Reference</p>
+  <h1 class="page-header__title">Algorithms</h1>
+  <p class="page-header__sub">Every cipher, hash function, and encoding JCRYPT implements, with its security status and recommended use.</p>
+</section>
+
+<section class="algo-group">
+  <h2 class="algo-group__title">Symmetric Encryption</h2>
+  <div class="algo-card-grid">
+    {% for algo in symmetric %}
+    <article class="algo-card">
+      <div class="algo-card__head">
+        <h3>{{ algo.name }}</h3>
+        <span class="badge badge--{{ 'ok' if algo.security == 'Recommended' else 'warn' }}">{{ algo.security }}</span>
+      </div>
+      <dl class="algo-card__meta">
+        <div><dt>Type</dt><dd>{{ algo.type }}</dd></div>
+        <div><dt>Key</dt><dd>{{ algo.key }}</dd></div>
+        <div><dt>Operations</dt><dd>{{ algo.operations | join(', ') }}</dd></div>
+      </dl>
+      <p class="algo-card__desc">{{ algo.description }}</p>
+      <p class="algo-card__usage"><strong>Recommended usage:</strong> {{ algo.usage }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="algo-group">
+  <h2 class="algo-group__title">Classical Ciphers</h2>
+  <div class="algo-card-grid">
+    {% for algo in classical %}
+    <article class="algo-card">
+      <div class="algo-card__head">
+        <h3>{{ algo.name }}</h3>
+        <span class="badge badge--warn">{{ algo.security }}</span>
+      </div>
+      <dl class="algo-card__meta">
+        <div><dt>Type</dt><dd>{{ algo.type }}</dd></div>
+        <div><dt>Key</dt><dd>{{ algo.key }}</dd></div>
+        <div><dt>Operations</dt><dd>{{ algo.operations | join(', ') }}</dd></div>
+      </dl>
+      <p class="algo-card__desc">{{ algo.description }}</p>
+      <p class="algo-card__usage"><strong>Recommended usage:</strong> {{ algo.usage }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="algo-group">
+  <h2 class="algo-group__title">Hashing</h2>
+  <div class="algo-card-grid">
+    {% for algo in hashes %}
+    <article class="algo-card">
+      <div class="algo-card__head">
+        <h3>{{ algo.name }}</h3>
+        <span class="badge badge--{{ 'ok' if algo.security == 'Recommended' else 'danger' if algo.security == 'Broken' else 'warn' }}">{{ algo.security }}</span>
+      </div>
+      <dl class="algo-card__meta">
+        <div><dt>Type</dt><dd>{{ algo.type }}</dd></div>
+        <div><dt>Key</dt><dd>{{ algo.key }}</dd></div>
+        <div><dt>Operations</dt><dd>{{ algo.operations | join(', ') }}</dd></div>
+      </dl>
+      <p class="algo-card__desc">{{ algo.description }}</p>
+      <p class="algo-card__usage"><strong>Recommended usage:</strong> {{ algo.usage }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="algo-group">
+  <h2 class="algo-group__title">Encoding</h2>
+  <div class="algo-card-grid">
+    {% for algo in encodings %}
+    <article class="algo-card">
+      <div class="algo-card__head">
+        <h3>{{ algo.name }}</h3>
+        <span class="badge badge--neutral">Not encryption</span>
+      </div>
+      <dl class="algo-card__meta">
+        <div><dt>Type</dt><dd>{{ algo.type }}</dd></div>
+        <div><dt>Key</dt><dd>{{ algo.key }}</dd></div>
+        <div><dt>Operations</dt><dd>{{ algo.operations | join(', ') }}</dd></div>
+      </dl>
+      <p class="algo-card__desc">{{ algo.description }}</p>
+      <p class="algo-card__usage"><strong>Recommended usage:</strong> {{ algo.usage }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
